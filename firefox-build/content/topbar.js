@@ -6,7 +6,7 @@
 
 (async function () {
   if (typeof CER === "undefined") return;
-  const settings = await CER.get();
+  let settings = await CER.get();
   // the custom sidebar owns navigation — skip Roblox's nav migration entirely
   if (settings.features.customSidebar) return;
 
@@ -32,6 +32,15 @@
   updateTopbarMode();
   const modeTimer = setInterval(updateTopbarMode, 1500);
   setTimeout(() => clearInterval(modeTimer), 20000);
+
+  // re-read settings when the panel changes them, so toggling "show top bar"
+  // (or Groups rename) takes effect live instead of only after a reload
+  CER.ext.storage.onChanged?.addListener?.(async (changes) => {
+    if (!changes.features) return;
+    settings = await CER.get();
+    updateTopbarMode();
+    applyRenames();
+  });
 
   const list = await CER.waitFor(sidebarList, 15000).catch(() => null);
   if (!list) return;
@@ -173,9 +182,12 @@
       }
       if (a.children.length === 0 && /marketplace/i.test(a.textContent)) a.textContent = "Catalog";
     }
-    // Communities → Groups (sidebar), optional
+    // Communities → Groups (sidebar), optional. Query the LIVE list — React
+    // swaps the whole <ul> on navigation, so the startup `list` reference goes
+    // stale and querying it would miss the re-rendered items.
     if (settings.features.renameGroups) {
-      for (const span of list.querySelectorAll("span")) {
+      const l = sidebarList() || list;
+      for (const span of l.querySelectorAll("span")) {
         if (span.children.length === 0 && span.textContent.trim() === "Communities") span.textContent = "Groups";
       }
     }

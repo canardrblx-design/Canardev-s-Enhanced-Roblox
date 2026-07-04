@@ -172,7 +172,7 @@
     const info = CER.el("div", "cer-sb-info");
     const bar = CER.el("div", "cer-sb-bar");
     const fill = CER.el("div", "cer-sb-fill");
-    fill.style.width = Math.round((s.playing / s.maxPlayers) * 100) + "%";
+    fill.style.width = (s.maxPlayers > 0 ? Math.round((s.playing / s.maxPlayers) * 100) : 0) + "%";
     if (s.playing >= s.maxPlayers) fill.classList.add("cer-sb-fill-full");
     bar.appendChild(fill);
     info.appendChild(CER.el("div", "cer-sb-players", `${s.playing} / ${s.maxPlayers} players`));
@@ -208,7 +208,7 @@
         const friends = (await (await fetch(`https://friends.roblox.com/v1/users/${me.id}/friends`, { credentials: "include" })).json()).data ?? [];
         if (friends.length) {
           const pres = await CER.bgFetch("https://presence.roblox.com/v1/presence/users", "POST", { userIds: friends.map((f) => f.id) });
-          const inServers = new Set((pres.data?.userPresences ?? []).filter((p) => p.gameId).map((p) => p.gameId));
+          const inServers = new Set((pres.data?.userPresences ?? []).filter((p) => p.userPresenceType === 2 && p.gameId).map((p) => p.gameId));
           const filtered = open.filter((s) => !inServers.has(s.id));
           if (filtered.length) open = filtered;
         }

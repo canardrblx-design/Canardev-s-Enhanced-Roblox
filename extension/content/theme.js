@@ -66,6 +66,8 @@
         ? ".cer-avatar-inline"
         : p.startsWith("/catalog")
         ? "[class*='item-card'], .catalog-item-container, [class*='ItemCard']"
+        : p.startsWith("/charts")
+        ? ".cer-games"
         : p.startsWith("/home")
         ? ".friends-carousel-container"
         : null;

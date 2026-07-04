@@ -123,7 +123,7 @@
       const img = CER.el("img", "cer-friend-avatar " + cls);
       img.src = heads[f.id] ?? "";
       link.appendChild(img);
-      link.appendChild(CER.el("div", "cer-friend-name", f.displayName || f.name));
+      link.appendChild(CER.el("div", "cer-friend-name", f.displayName || f.name || "User " + f.id));
       const status = CER.el("div", "cer-friend-status " + cls, p?.userPresenceType === 2 && p?.lastLocation ? p.lastLocation : label);
       link.appendChild(status);
       card.appendChild(link);
@@ -201,7 +201,7 @@
       const img = CER.el("img", "cer-friend-avatar");
       img.src = heads[r.id] ?? "";
       link.appendChild(img);
-      link.appendChild(CER.el("div", "cer-friend-name", r.displayName || r.name));
+      link.appendChild(CER.el("div", "cer-friend-name", r.displayName || r.name || "User " + r.id));
       card.appendChild(link);
       const row = CER.el("div", "cer-friend-actions");
       const accept = CER.el("button", "cer-friend-btn cer-friend-btn-primary", "Accept");

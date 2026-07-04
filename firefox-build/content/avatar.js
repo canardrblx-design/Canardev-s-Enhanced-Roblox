@@ -108,6 +108,10 @@
   async function setWearing() {
     const assets = [...worn.values()].map((a) => (a.meta ? { id: a.id, meta: a.meta } : { id: a.id }));
     const res = await CER.robloxWrite("https://avatar.roblox.com/v2/avatar/set-wearing-assets", "POST", { assets });
+    // re-sync from the server so meta-bearing assets (faces, adjustable layered
+    // items) carry their real meta on the next write — a freshly-clicked tile
+    // only knows {id, name}, and sending that repeatedly would drop the meta.
+    if (res?.ok) await refreshWorn().catch(() => {});
     return res?.ok;
   }
 

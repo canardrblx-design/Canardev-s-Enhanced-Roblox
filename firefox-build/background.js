@@ -55,7 +55,21 @@ function todayKey(now) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
+let playtimeBusy = false;
 async function tickPlaytime() {
+  // the alarm and the settings Playtime tab can both fire this; without a lock
+  // two overlapping runs read the same stale lastTick and one clobbers the
+  // other's write (lost or double-counted minutes)
+  if (playtimeBusy) return;
+  playtimeBusy = true;
+  try {
+    await tickPlaytimeInner();
+  } finally {
+    playtimeBusy = false;
+  }
+}
+
+async function tickPlaytimeInner() {
   const now = Date.now();
   const store = await ext.storage.local.get(["playtime", "playtimeState", "cerUserId"]);
   const playtime = store.playtime ?? {};

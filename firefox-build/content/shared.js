@@ -241,7 +241,12 @@ CER.get = async function () {
 // lives only in background.js — we just hand it the text. 10-minute cooldown.
 CER.FEEDBACK_COOLDOWN = 10 * 60 * 1000;
 CER.sendFeedback = async function (kind, message) {
-  const { feedbackAt = 0 } = await CER.ext.storage.local.get("feedbackAt");
+  let feedbackAt = 0;
+  try {
+    ({ feedbackAt = 0 } = await CER.ext.storage.local.get("feedbackAt"));
+  } catch {
+    return { ok: false, status: 0 }; // context invalidated (extension reloading)
+  }
   const wait = CER.FEEDBACK_COOLDOWN - (Date.now() - feedbackAt);
   if (wait > 0) return { ok: false, cooldown: Math.ceil(wait / 60000) };
   let me = null;
@@ -330,7 +335,10 @@ CER.waitFor = function (fn, timeoutMs = 15000) {
 // Write requests to Roblox need the CSRF token dance: the first call gets a
 // 403 with a token in the headers, the retry with that token succeeds.
 CER.robloxWrite = async function (url, method, body) {
-  let token = "";
+  // seed from the last token we saw: if a 403 ever comes back WITHOUT the
+  // header (malformed response), we can still retry with a cached one instead
+  // of giving up.
+  let token = CER._csrf || "";
   for (let attempt = 0; attempt < 2; attempt++) {
     const res = await fetch(url, {
       method,
@@ -339,8 +347,13 @@ CER.robloxWrite = async function (url, method, body) {
       body: JSON.stringify(body),
     });
     if (res.status === 403) {
-      token = res.headers.get("x-csrf-token") ?? "";
-      if (token) continue;
+      const fresh = res.headers.get("x-csrf-token");
+      if (fresh) CER._csrf = fresh;
+      const next = fresh || CER._csrf;
+      if (next && next !== token) {
+        token = next;
+        continue;
+      }
     }
     return res;
   }
