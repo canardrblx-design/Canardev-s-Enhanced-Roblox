@@ -189,18 +189,24 @@
   main.appendChild(trendRow);
 
   let genreIdx = 0;
+  let genreSeq = 0;
   let carouselTimer = null;
   let stopped = false;
   const cover = CER.el("span", "cer-g-genre-cover");
   genrePill.appendChild(cover);
 
   async function showGenre(i) {
+    // the carousel timer fires this without awaiting, so a slow genre fetch can
+    // still be in flight when the next tick starts. Tag each call and bail if a
+    // newer one has since started, so overlapping fetches can't clobber the row.
+    const seq = ++genreSeq;
     genreIdx = ((i % GENRES.length) + GENRES.length) % GENRES.length;
     const genre = GENRES[genreIdx];
     genreLabel.textContent = genre + " ▾"; // the pill shows what it's sorting
     trendRow.textContent = "";
     trendRow.appendChild(CER.skelGrid(6, 140, 250));
     const games = await searchGenre(genre);
+    if (seq !== genreSeq) return; // superseded by a newer showGenre call
     await renderRow(trendRow, games, 12);
   }
 

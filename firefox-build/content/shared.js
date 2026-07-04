@@ -422,6 +422,7 @@ CER.getUniverseIds = async function (placeIds) {
     missing.map(async (p) => {
       try {
         const r = await fetch("https://apis.roblox.com/universes/v1/places/" + p + "/universe");
+        if (!r.ok) return; // non-2xx with a JSON body would otherwise cache a bad/undefined id
         const id = (await r.json()).universeId;
         if (id) {
           result[p] = String(id);
@@ -455,7 +456,7 @@ CER.getGameThumbs = async function (universeIds) {
       let pending = false;
       for (const item of body.data ?? []) {
         const t = item.thumbnails?.[0];
-        if (t?.imageUrl) thumbs[item.universeId] = t.imageUrl;
+        if (t?.imageUrl && item.universeId) thumbs[item.universeId] = t.imageUrl;
         else if (t?.state === "Pending") pending = true;
       }
       if (!pending) break;

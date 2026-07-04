@@ -260,7 +260,7 @@
     menu.appendChild(rbx);
     const out = CER.el("button", "cer-ctx-item", "Log Out");
     out.addEventListener("click", async () => {
-      if (!out.dataset.arm) { out.dataset.arm = "1"; out.textContent = "Log out — sure?"; return; }
+      if (!out.dataset.arm) { out.dataset.arm = "1"; out.textContent = "Log out? Tap again"; return; }
       await CER.bgFetch("https://auth.roblox.com/v2/logout", "POST", {});
       location.href = "https://www.roblox.com/";
     });

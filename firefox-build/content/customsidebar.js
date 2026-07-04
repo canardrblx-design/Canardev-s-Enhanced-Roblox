@@ -118,10 +118,14 @@
 
   // --- search ---
   const searchLi = CER.el("li", "cer-cnav-li cer-cnav-search-li");
+  const searchWrap = CER.el("div", "cer-cnav-search-wrap");
+  searchWrap.innerHTML =
+    '<svg class="cer-cnav-search-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4-4"/></svg>';
   const search = CER.el("input", "cer-cnav-search");
   search.type = "search";
   search.placeholder = "Search Roblox";
-  searchLi.appendChild(search);
+  searchWrap.appendChild(search);
+  searchLi.appendChild(searchWrap);
 
   // typing opens a where-to-search dropdown: Games / People / Catalog / Groups
   const SEARCH_TARGETS = [
@@ -256,7 +260,7 @@
     menu.appendChild(rbx);
     const out = CER.el("button", "cer-ctx-item", "Log Out");
     out.addEventListener("click", async () => {
-      if (!out.dataset.arm) { out.dataset.arm = "1"; out.textContent = "Log out — sure?"; return; }
+      if (!out.dataset.arm) { out.dataset.arm = "1"; out.textContent = "Log out? Tap again"; return; }
       await CER.bgFetch("https://auth.roblox.com/v2/logout", "POST", {});
       location.href = "https://www.roblox.com/";
     });

@@ -6,8 +6,10 @@
 // Data: Roblox's explore-api (get-sort-content) + search-api (genre lists) +
 // presence for friends. Thumbnails via CER.getGameThumbs.
 
-(async function () {
+(function () {
   if (typeof CER === "undefined") return;
+
+  async function runGamesRedesign() {
   if (!location.pathname.startsWith("/charts")) return;
   const settings = await CER.get();
   if (!settings.features.gamesRedesign) return;
@@ -156,6 +158,7 @@
   // the "clicked Games, got the old page" race) — keep everything but our root
   // hidden on every re-render.
   new MutationObserver(() => {
+    if (!location.pathname.startsWith("/charts")) return; // don't touch other pages
     for (const c of host.children) {
       if (c !== root && c.style.display !== "none") c.style.display = "none";
     }
@@ -186,18 +189,24 @@
   main.appendChild(trendRow);
 
   let genreIdx = 0;
+  let genreSeq = 0;
   let carouselTimer = null;
   let stopped = false;
   const cover = CER.el("span", "cer-g-genre-cover");
   genrePill.appendChild(cover);
 
   async function showGenre(i) {
+    // the carousel timer fires this without awaiting, so a slow genre fetch can
+    // still be in flight when the next tick starts. Tag each call and bail if a
+    // newer one has since started, so overlapping fetches can't clobber the row.
+    const seq = ++genreSeq;
     genreIdx = ((i % GENRES.length) + GENRES.length) % GENRES.length;
     const genre = GENRES[genreIdx];
     genreLabel.textContent = genre + " ▾"; // the pill shows what it's sorting
     trendRow.textContent = "";
     trendRow.appendChild(CER.skelGrid(6, 140, 250));
     const games = await searchGenre(genre);
+    if (seq !== genreSeq) return; // superseded by a newer showGenre call
     await renderRow(trendRow, games, 12);
   }
 
@@ -247,9 +256,12 @@
   showGenre(0).then(startCarousel);
 
   // --- Canardev's picks ---
-  main.appendChild(CER.el("h2", "cer-g-h2 cer-g-picks-h", "Canardev's picks"));
-  const picksSub = CER.el("div", "cer-g-pickssub");
-  main.appendChild(picksSub);
+  // title + countdown share one line (timer sits right after the heading)
+  const picksHead = CER.el("div", "cer-g-trendhead cer-g-pickshead");
+  picksHead.appendChild(CER.el("h2", "cer-g-h2 cer-g-picks-h", "Canardev's picks"));
+  const picksSub = CER.el("span", "cer-g-pickssub");
+  picksHead.appendChild(picksSub);
+  main.appendChild(picksHead);
   const picksRow = CER.el("div", "cer-g-grid");
   main.appendChild(picksRow);
 
@@ -352,4 +364,13 @@
       sideList.appendChild(CER.el("p", "cer-hint", "Couldn't load friends."));
     }
   })();
+  }
+
+  // content scripts only run once per full load; on SPA navigation to /charts
+  // the initial run already bailed (wrong path), so re-run on every nav — the
+  // internal guards make it a no-op when it's already built or off-charts.
+  runGamesRedesign();
+  CER.onNavigate?.(() => {
+    if (location.pathname.startsWith("/charts")) runGamesRedesign();
+  });
 })();

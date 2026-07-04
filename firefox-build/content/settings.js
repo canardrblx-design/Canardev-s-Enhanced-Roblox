@@ -57,7 +57,7 @@
     out.addEventListener("click", async () => {
       if (!out.dataset.arm) {
         out.dataset.arm = "1";
-        out.textContent = "Log out — are you sure?";
+        out.textContent = "Log out? Tap again";
         return;
       }
       await CER.robloxWrite("https://auth.roblox.com/v2/logout", "POST", {}).catch(() => {});
@@ -291,7 +291,7 @@
     body.appendChild(CER.el("h3", "cer-h3", "Quick tips"));
     const tips = CER.el("ul", "cer-tips");
     for (const t of [
-      "Pick a theme in the Themes tab — it applies instantly.",
+      "Pick a theme in the Themes tab. It changes right away.",
       "The ⚙ next to a game's Play button opens the Join tab.",
       "Hide any home row from the Home Sections tab.",
     ]) {
@@ -478,7 +478,7 @@
     if (games.length === 0) {
       body.appendChild(CER.el("h3", "cer-h3", "Playtime"));
       body.appendChild(
-        CER.el("p", "cer-feature-hint", "Nothing tracked yet. Play a game and your time shows up here — everything is stored locally, only on your device.")
+        CER.el("p", "cer-feature-hint", "No playtime yet. Play a game and it shows up here. Your data stays on your device.")
       );
       return;
     }
@@ -643,7 +643,7 @@
     const row = CER.el("label", "cer-feature-row");
     const textWrap = CER.el("div");
     textWrap.appendChild(CER.el("div", "cer-feature-name", "Avoid servers my friends are in"));
-    textWrap.appendChild(CER.el("div", "cer-feature-hint", "When you use Join random / best server, skip any server a friend is currently playing in."));
+    textWrap.appendChild(CER.el("div", "cer-feature-hint", "Skip servers where your friends are already playing."));
     row.appendChild(textWrap);
     const box = CER.el("input");
     box.type = "checkbox";
@@ -701,7 +701,7 @@
           window.postMessage({ cer: "join-instance", placeId, jobId: pick.id }, location.origin);
           btn.textContent = "Joining…";
         } catch {
-          btn.textContent = "Couldn't find a server — try again";
+          btn.textContent = "No server found. Try again";
         } finally {
           setTimeout(() => {
             btn.disabled = false;
@@ -716,7 +716,7 @@
       CER.el(
         "p",
         "cer-feature-hint",
-        "The Servers tab has a full browser too (sort, filter, best-server join, join by ID). Choosing a specific region isn’t possible — Roblox blocks the per-server IP lookup that would require."
+        "The Servers tab lets you sort, filter, and join by ID. You can't pick a region because Roblox does not allow it."
       )
     );
   }
@@ -739,7 +739,7 @@
       if (!document.querySelector(selector)) continue;
       const toast = CER.el("div", "cer-conflict-toast");
       toast.appendChild(
-        CER.el("span", "", `⚠ ${name} detected. Other Roblox extensions can conflict with CER — duplicated UI, broken layouts. Consider disabling one.`)
+        CER.el("span", "", `⚠ ${name} found. Two Roblox add-ons can clash. Try turning one off.`)
       );
       // not dismissable for the first 10 seconds — the × shows a countdown
       const x = CER.el("button", "cer-panel-x cer-toast-locked", "10");

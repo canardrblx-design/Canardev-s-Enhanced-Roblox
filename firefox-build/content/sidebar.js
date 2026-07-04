@@ -159,7 +159,10 @@
     }
   }
   updateOnlineCount();
-  setInterval(updateOnlineCount, 120000);
+  const onlineTimer = setInterval(() => {
+    if (!CER.alive?.()) return clearInterval(onlineTimer); // stop polling once the extension reloads
+    updateOnlineCount();
+  }, 120000);
 
   let timer = null;
   const observer = new MutationObserver(() => {

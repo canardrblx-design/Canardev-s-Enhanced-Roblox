@@ -93,27 +93,30 @@
         const section = CER.el("div", "cer-psocial-mutuals");
         section.appendChild(CER.el("h3", "cer-h3", `${mutuals.length} Mutual Friend${mutuals.length === 1 ? "" : "s"}`));
         const row = CER.el("div", "cer-bf-row");
+        // build the tiles (with names) up front and show the section right away,
+        // then fill in avatars when the thumbnail call returns — otherwise an
+        // empty row flashes in before the images load
+        const imgById = {};
+        for (const m of mutuals.slice(0, 20)) {
+          const tile = CER.el("a", "cer-bf-tile");
+          tile.href = "https://www.roblox.com/users/" + m.id + "/profile";
+          const img = CER.el("img", "cer-bf-avatar");
+          imgById[m.id] = img;
+          tile.appendChild(img);
+          tile.appendChild(CER.el("span", "cer-bf-name", m.displayName || m.name));
+          row.appendChild(tile);
+        }
+        section.appendChild(row);
+        card.appendChild(section);
         fetch(
           "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + mutuals.slice(0, 20).map((m) => m.id).join(",") + "&size=150x150&format=Png&isCircular=true",
           { credentials: "include" }
         )
           .then((r) => r.json())
           .then((d) => {
-            const heads = {};
-            for (const it of d.data ?? []) heads[it.targetId] = it.imageUrl;
-            for (const m of mutuals.slice(0, 20)) {
-              const tile = CER.el("a", "cer-bf-tile");
-              tile.href = "https://www.roblox.com/users/" + m.id + "/profile";
-              const img = CER.el("img", "cer-bf-avatar");
-              img.src = heads[m.id] ?? "";
-              tile.appendChild(img);
-              tile.appendChild(CER.el("span", "cer-bf-name", m.displayName || m.name));
-              row.appendChild(tile);
-            }
+            for (const it of d.data ?? []) if (imgById[it.targetId]) imgById[it.targetId].src = it.imageUrl;
           })
           .catch(() => {});
-        section.appendChild(row);
-        card.appendChild(section);
       });
     }
   }

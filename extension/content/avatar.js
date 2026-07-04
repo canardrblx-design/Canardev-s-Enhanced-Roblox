@@ -365,7 +365,9 @@
         const url =
           `https://inventory.roblox.com/v2/users/${me.id}/inventory/${t}?limit=50&sortOrder=Desc` +
           (cursor && typeIds.length === 1 ? "&cursor=" + encodeURIComponent(cursor) : "");
-        const page = await (await fetch(url, { credentials: "include" })).json();
+        const pageRes = await fetch(url, { credentials: "include" });
+        if (!pageRes.ok) throw new Error("inventory " + pageRes.status);
+        const page = await pageRes.json();
         items = items.concat(page.data ?? []);
         if (typeIds.length === 1) nextCursor = page.nextPageCursor ?? "";
       }
@@ -566,7 +568,9 @@
         tile.addEventListener("click", () => {
           const toast = CER.toast("Wearing " + bundle.name + "…");
           enqueue(async () => {
-            const details = await (await fetch("https://catalog.roblox.com/v1/bundles/" + bundle.id + "/details", { credentials: "include" })).json();
+            const bundleRes = await fetch("https://catalog.roblox.com/v1/bundles/" + bundle.id + "/details", { credentials: "include" });
+            if (!bundleRes.ok) { toast.textContent = "Couldn't load that bundle"; return; }
+            const details = await bundleRes.json();
             const outfit = (details.items ?? []).find((i) => i.type === "UserOutfit");
             if (outfit) {
               const res = await CER.robloxWrite("https://avatar.roblox.com/v1/outfits/" + outfit.id + "/wear", "POST", {});
@@ -636,7 +640,7 @@
           playerAvatarType: av.playerAvatarType,
         });
         if (res?.ok) loadOutfits();
-        else create.textContent = "Couldn't save — try again";
+        else create.textContent = "Couldn't save. Try again";
       } finally {
         create.disabled = false;
       }

@@ -78,7 +78,8 @@
     li.classList.add("cer-topnav-li", "cer-chat-li");
     li.style.order = 60; // flex order keeps it between the nav items and Settings
     list.appendChild(li);
-    setInterval(() => {
+    const keepAlive = setInterval(() => {
+      if (!CER.alive?.()) return clearInterval(keepAlive); // stop once the extension reloads
       if (!document.contains(li)) {
         li.style.order = 60;
         sidebarList()?.appendChild(li);
