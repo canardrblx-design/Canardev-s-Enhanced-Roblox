@@ -1,0 +1,4 @@
+# nothing to ignore yet — no build step, no dependencies
+.DS_Store
+*.zip
+cer-firefox.zip
