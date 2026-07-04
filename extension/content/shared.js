@@ -500,6 +500,7 @@ CER.getGameMeta = async function (universeIds) {
 // Game-title cleanup per user settings: "[UPD] Bedwars 🔥" → "Bedwars".
 CER.cleanTitle = function (title, features) {
   features = features || {};
+  if (title == null) return ""; // never call .replace/.trim on a missing title
   let out = title;
   if (features.cleanTitles) out = out.replace(/\s*[\[(][^\])]*[\])]/g, " ");
   if (features.stripEmojis) out = out.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}️]/gu, "");

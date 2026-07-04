@@ -32,6 +32,7 @@
         const valueEl = [...label.parentElement.children].find((c) => c !== label);
         if (!valueEl) return;
         const res = await fetch("https://games.roblox.com/v1/games?universeIds=" + universeId, { credentials: "include" });
+        if (!res.ok) return; // a 4xx/5xx returns HTML, not JSON
         const updated = (await res.json())?.data?.[0]?.updated;
         if (!updated) return;
         const full = new Date(updated);

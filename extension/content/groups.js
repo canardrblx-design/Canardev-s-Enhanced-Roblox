@@ -85,7 +85,7 @@
         { credentials: "include" }
       );
       games = ((await r.json()).data ?? [])
-        .map((g) => ({ universeId: String(g.id), placeId: String(g.rootPlace?.id ?? ""), name: g.name }))
+        .map((g) => ({ universeId: String(g.id), placeId: String(g.rootPlace?.id ?? ""), name: g.name ?? "Untitled" }))
         .filter((g) => g.placeId);
     } catch {
       games = [];

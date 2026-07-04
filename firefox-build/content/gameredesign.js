@@ -322,7 +322,13 @@
   syncPillFromHash();
   window.addEventListener("hashchange", syncPillFromHash);
 
-  setTimeout(() => setEventsMode(false), 800);
+  // after the lazy content settles, match Events mode to whatever tab is active
+  // — an unconditional setEventsMode(false) here would override landing on
+  // #!/events (bookmarked/shared Events links)
+  setTimeout(() => {
+    const idx = [...tabBar.querySelectorAll(".cer-tab")].indexOf(activeTab);
+    setEventsMode(idx >= 0 && TABS[idx][0] === "Events");
+  }, 800);
 
   // "People Also Join" / recommendations load lazily and re-render — keep them
   // gone. Also move the social-links block under the maturity label and put

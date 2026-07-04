@@ -186,8 +186,8 @@
     // swaps the whole <ul> on navigation, so the startup `list` reference goes
     // stale and querying it would miss the re-rendered items.
     if (settings.features.renameGroups) {
-      const l = sidebarList() || list;
-      for (const span of l.querySelectorAll("span")) {
+      const l = sidebarList();
+      if (l) for (const span of l.querySelectorAll("span")) {
         if (span.children.length === 0 && span.textContent.trim() === "Communities") span.textContent = "Groups";
       }
     }
@@ -245,7 +245,8 @@
   if (l0) orderObserver.observe(l0, { childList: true, attributes: true, subtree: true });
 
   // keep our widgets + renames + order alive through React re-renders
-  setInterval(() => {
+  const keepAlive = setInterval(() => {
+    if (!CER.alive?.()) return clearInterval(keepAlive); // stop once the extension reloads
     if (!settings.features.showTopBar && widgets.length && !document.contains(widgets[0])) {
       const l = sidebarList();
       if (l) {

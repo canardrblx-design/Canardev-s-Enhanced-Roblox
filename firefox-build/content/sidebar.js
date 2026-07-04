@@ -166,6 +166,7 @@
 
   let timer = null;
   const observer = new MutationObserver(() => {
+    if (!CER.alive?.()) return observer.disconnect(); // stop touching storage once the extension reloads
     clearTimeout(timer);
     timer = setTimeout(apply, 500);
   });

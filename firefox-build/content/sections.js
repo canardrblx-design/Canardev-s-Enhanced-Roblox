@@ -33,7 +33,9 @@
     const found = [];
     const feedRoot = getFeedRoot();
 
-    for (const header of document.querySelectorAll(".home-sort-header-container")) {
+    // scope to the feed so a stray .home-sort-header-container elsewhere (a
+    // widget, the sidebar) can't get registered as a home section
+    for (const header of (feedRoot || document).querySelectorAll(".home-sort-header-container")) {
       const wrapper = header.parentElement;
       const raw = header.querySelector('[class*="textIconRowText"]')?.textContent ?? header.textContent;
       const title = cleanSectionTitle(raw);

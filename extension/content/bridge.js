@@ -12,9 +12,11 @@ window.addEventListener("message", (event) => {
   const launcher = window.Roblox && window.Roblox.GameLauncher;
   if (!launcher) return;
 
-  if (msg.cer === "join-instance" && msg.placeId && msg.jobId) {
-    launcher.joinGameInstance(Number(msg.placeId), String(msg.jobId));
-  } else if (msg.cer === "join-multiplayer" && msg.placeId) {
+  // placeId must be a real number and jobId a non-empty string — a forged
+  // message with junk fields would otherwise reach the launcher as NaN
+  if (msg.cer === "join-instance" && Number.isFinite(Number(msg.placeId)) && msg.placeId && typeof msg.jobId === "string" && msg.jobId) {
+    launcher.joinGameInstance(Number(msg.placeId), msg.jobId);
+  } else if (msg.cer === "join-multiplayer" && msg.placeId && Number.isFinite(Number(msg.placeId))) {
     launcher.joinMultiplayerGame(Number(msg.placeId));
   }
 });
