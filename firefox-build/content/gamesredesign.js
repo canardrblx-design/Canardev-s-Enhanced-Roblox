@@ -259,9 +259,10 @@
   // --- Canardev's picks ---
   // title + countdown share one line (timer sits right after the heading)
   const picksHead = CER.el("div", "cer-g-trendhead cer-g-pickshead");
-  picksHead.appendChild(CER.el("h2", "cer-g-h2 cer-g-picks-h", "Canardev's picks"));
+  const picksTitle = CER.el("h2", "cer-g-h2 cer-g-picks-h", "Canardev's picks");
   const picksSub = CER.el("span", "cer-g-pickssub");
-  picksHead.appendChild(picksSub);
+  picksTitle.appendChild(picksSub); // timer is part of the title line, not a flex sibling
+  picksHead.appendChild(picksTitle);
   main.appendChild(picksHead);
   const picksRow = CER.el("div", "cer-g-grid");
   main.appendChild(picksRow);

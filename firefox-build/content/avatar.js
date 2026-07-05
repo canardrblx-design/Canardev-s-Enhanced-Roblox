@@ -82,8 +82,18 @@
   }
   hideNative();
   host.appendChild(root);
+  // Roblox's #content.seven-column is a FIXED 1238px grid column that never
+  // shrinks, so on any window narrower than that the editor overflowed and got
+  // cut off (only fullscreen showed it all). Force the app row + content column
+  // fluid so it fits every window width.
+  function fitWidth() {
+    host.style.width = host.style.maxWidth = "100%";
+    const content = host.closest(".content, #content");
+    if (content) content.style.width = content.style.maxWidth = "100%";
+  }
+  fitWidth();
   new MutationObserver(() => {
-    if (active) hideNative();
+    if (active) { hideNative(); fitWidth(); }
   }).observe(host, { childList: true });
 
   // ---- worn state + serial equip queue ----

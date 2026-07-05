@@ -3076,22 +3076,22 @@ body [class*="group-badge"] {
   background: var(--color-surface-300, rgba(128, 128, 128, 0.2));
 }
 
+/* the timer is now an inline part of the title itself (not a flex sibling), so
+   it just flows after the heading text — no resolution-dependent baseline math. */
 .cer-g-pickssub {
-  font-size: 13px;
+  font-size: 0.6em; /* relative to the h2 */
   font-weight: 700;
   color: var(--cer-accent, var(--color-content-link, #4dabff));
-  margin-left: 12px;
-  align-self: baseline;
+  margin-left: 10px;
+  vertical-align: middle;
   white-space: nowrap;
 }
 
-/* the timer sits on the title's baseline so the two read as one line.
-   Needs to out-specify the generic .cer-g-trendhead { align-items:center }. */
 .cer-g-trendhead.cer-g-pickshead {
-  align-items: baseline;
+  display: block;
 }
 .cer-g-trendhead.cer-g-pickshead .cer-g-h2 {
-  display: inline-block;
+  display: block;
   margin: 0;
 }
 
