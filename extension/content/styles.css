@@ -3298,7 +3298,7 @@ body [class*="group-badge"] {
 .cer-skel-nav {
   width: 288px;
   flex: 0 0 288px;
-  background: var(--color-surface-100, rgba(128, 128, 128, 0.06));
+  background: rgba(128, 128, 128, 0.08); /* neutral: visible on any theme, never black */
 }
 
 .cer-skel-main {
@@ -3311,7 +3311,7 @@ body [class*="group-badge"] {
 
 .cer-skel-block {
   border-radius: 12px;
-  background: var(--color-surface-200, rgba(128, 128, 128, 0.1));
+  background: rgba(128, 128, 128, 0.2);
   animation: cer-skel-pulse 1.2s ease-in-out infinite;
 }
 
@@ -3554,7 +3554,7 @@ body.cer-catalog .shopping-cart-icon {
 
 .cer-skel-tile {
   border-radius: 12px;
-  background: var(--color-surface-200, rgba(128, 128, 128, 0.1));
+  background: rgba(128, 128, 128, 0.2);
   animation: cer-skel-pulse 1.2s ease-in-out infinite;
   flex: 0 0 auto;
 }
@@ -4157,4 +4157,24 @@ body.cer-group-cfg .cer-set-card {
    (centering the caption broke the newer horizontal people-card layout). */
 .cer-search-page .game-card-name {
   text-align: center;
+}
+
+/* search pages: drop the redundant results title, the page's own search bar, and
+   the Create Group button; content flows up to fill the gap */
+.cer-search-page .section-title,
+.cer-search-page .create-group-button,
+.cer-search-page .header-button-containers,
+.cer-search-page .form-has-feedback:has(.group-search-field),
+.cer-search-page .form-has-feedback:has(input.new-input-field) {
+  display: none !important;
+}
+/* group cards: fit the whole icon + clamp long descriptions to 2 lines */
+.cer-search-page .group-card {
+  min-height: 110px;
+}
+.cer-search-page .group-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

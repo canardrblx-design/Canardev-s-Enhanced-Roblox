@@ -135,7 +135,7 @@ CER.THEMES = [
   },
   {
     id: "galaxy", name: "Galaxy", dark: true, flat: "#0a0518",
-    bg: "radial-gradient(1.5px 1.5px at 62px 88px, rgba(255,255,255,0.85), transparent 2.5px) 0 0 / 420px 420px repeat, radial-gradient(1px 1px at 300px 210px, rgba(255,255,255,0.55), transparent 2px) 0 0 / 420px 420px repeat, radial-gradient(1px 1px at 160px 330px, rgba(255,255,255,0.5), transparent 2px) 0 0 / 420px 420px repeat, radial-gradient(ellipse 60% 40% at 30% 25%, rgba(140,70,220,0.35), transparent), radial-gradient(ellipse 55% 45% at 78% 70%, rgba(40,120,255,0.28), transparent), radial-gradient(ellipse 40% 30% at 60% 40%, rgba(255,80,180,0.15), transparent), linear-gradient(160deg, #070312 0%, #140a2c 55%, #0a0618 100%)",
+    bg: "radial-gradient(ellipse 60% 40% at 30% 25%, rgba(140,70,220,0.35), transparent), radial-gradient(ellipse 55% 45% at 78% 70%, rgba(40,120,255,0.28), transparent), radial-gradient(ellipse 40% 30% at 60% 40%, rgba(255,80,180,0.15), transparent), linear-gradient(160deg, #070312 0%, #140a2c 55%, #0a0618 100%)",
     header: "rgba(14, 7, 32, 0.94)", card: "#231343", accent: "#c26bff", swatch: "linear-gradient(135deg,#140a2c,#c26bff)",
   },
   {

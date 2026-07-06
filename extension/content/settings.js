@@ -388,8 +388,11 @@
         const cur = await CER.get();
         await CER.set({ theme: { ...cur.theme, preset: theme.id } });
         if (theme.native) {
-          // pure native switch, no overlay
+          // pure native switch — reload so Roblox re-serves with the new theme
+          // and the account setting actually sticks
           await CER.setNativeTheme(theme.native);
+          location.reload();
+          return;
         } else if (theme.id !== "") {
           // dark tints ride on native dark so Roblox recolors its own text,
           // chat, search, footer; light tints ride on native light
