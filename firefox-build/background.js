@@ -8,6 +8,7 @@ const ext = globalThis.browser ?? globalThis.chrome;
 ext.runtime.onInstalled.addListener(() => {
   console.log("Canardev's Enhanced Roblox installed");
   checkForUpdate();
+  ext.storage.local.remove("regionCooldownUntil"); // clear any stale region cooldown on update
 });
 ext.runtime.onStartup?.addListener(checkForUpdate);
 
@@ -228,11 +229,12 @@ async function cerFindRegionServer(placeId, regionKey) {
     method: "GET",
   });
   const servers = (listRes.data?.data ?? []).filter((s) => s && s.id && s.playing < s.maxPlayers);
+  if (servers.length === 0) return { empty: true }; // nothing to search (e.g. a game with no players)
   let probes = 0;
   for (const s of servers) {
     const cached = cerRegionCache.get(s.id);
     if (cached !== undefined) { // already known — free, doesn't count toward the cap
-      if (cached === regionKey) return s.id;
+      if (cached === regionKey) return { jobId: s.id };
       continue;
     }
     if (probes >= 15) break; // hard cap: at most 15 live probes per search
@@ -240,10 +242,10 @@ async function cerFindRegionServer(placeId, regionKey) {
     let region = null;
     try { region = await cerProbeRegion(placeId, s.id); } catch { /* skip */ }
     cerRegionCache.set(s.id, region);
-    if (region === regionKey) return s.id;
+    if (region === regionKey) return { jobId: s.id };
     await new Promise((r) => setTimeout(r, 500)); // throttle between probes
   }
-  return null;
+  return { probed: probes };
 }
 let cerRegionBusy = false;
 const CER_REGION_COOLDOWN_MS = 15 * 60 * 1000;
@@ -254,9 +256,10 @@ async function cerRegionJoin(placeId, regionKey) {
   if (cerRegionBusy) return { error: "busy" }; // one search at a time across all tabs
   cerRegionBusy = true;
   try {
-    const jobId = await cerFindRegionServer(placeId, regionKey);
-    if (jobId) return { ok: true, jobId };
-    const until = Date.now() + CER_REGION_COOLDOWN_MS; // 15 tries failed -> 15 min cooldown
+    const r = await cerFindRegionServer(placeId, regionKey);
+    if (r.jobId) return { ok: true, jobId: r.jobId };
+    if (r.empty) return { error: "empty" }; // no servers to search — caller just joins normally, NO cooldown
+    const until = Date.now() + CER_REGION_COOLDOWN_MS; // probed the list, none matched -> 15 min cooldown
     await ext.storage.local.set({ regionCooldownUntil: until });
     return { error: "notfound", until };
   } finally {

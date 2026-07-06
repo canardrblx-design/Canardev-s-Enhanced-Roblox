@@ -95,11 +95,13 @@
     if (res?.ok && res.jobId) {
       window.postMessage({ cer: "join-instance", placeId, jobId: res.jobId }, location.origin);
       setTimeout(() => (location.href = "roblox://experiences/start?placeId=" + placeId + "&gameInstanceId=" + res.jobId), 400);
-    } else if (res?.error === "cooldown" || res?.error === "notfound") {
-      CER.toast?.("No server found in " + CER.REGIONS[region] + ". Wait a few minutes, or join an optimal server.", "error");
     } else if (res?.error === "busy") {
       CER.toast?.("Still searching for a server. Give it a moment.", "error");
     } else {
+      // empty game, no match, cooldown, or an error: never leave them stuck — join normally
+      if (res?.error === "notfound" || res?.error === "cooldown") {
+        CER.toast?.("No " + CER.REGIONS[region] + " server found. Joining a normal one.", "error");
+      }
       normalJoin();
     }
   });
