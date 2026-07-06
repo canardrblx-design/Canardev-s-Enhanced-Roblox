@@ -103,7 +103,7 @@
     search.placeholder = "Search Roblox";
     search.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && search.value.trim()) {
-        location.href = "https://www.roblox.com/search/games?keyword=" + encodeURIComponent(search.value.trim());
+        location.href = "https://www.roblox.com/discover?Keyword=" + encodeURIComponent(search.value.trim());
       }
     });
     searchLi.appendChild(search);

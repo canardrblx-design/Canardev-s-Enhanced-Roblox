@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Canardev's Enhanced Roblox",
-  "version": "1.27.5",
+  "version": "1.28.0",
   "description": "Makes Roblox look and feel better. Themes, redesigned pages, and more. Free, open source, no tracking.",
   "permissions": [
     "storage",
@@ -47,7 +47,8 @@
         "content/presencerings.js",
         "content/communityrename.js",
         "content/hscroll.js",
-        "content/updatecheck.js"
+        "content/updatecheck.js",
+        "content/searchpage.js"
       ],
       "run_at": "document_idle"
     },

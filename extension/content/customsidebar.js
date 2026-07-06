@@ -129,10 +129,10 @@
 
   // typing opens a where-to-search dropdown: Games / People / Catalog / Groups
   const SEARCH_TARGETS = [
-    ["Games", { svg: "controller" }, (q) => "https://www.roblox.com/search/games?keyword=" + q],
+    ["Games", { svg: "controller" }, (q) => "https://www.roblox.com/discover?Keyword=" + q],
     ["People", { icon: "icon-regular-two-people" }, (q) => "https://www.roblox.com/search/users?keyword=" + q],
     ["Catalog", { icon: "icon-regular-building-store" }, (q) => "https://www.roblox.com/catalog/?Keyword=" + q],
-    ["Groups", { icon: "icon-regular-three-people" }, (q) => "https://www.roblox.com/search/groups?keyword=" + q],
+    ["Groups", { icon: "icon-regular-three-people" }, (q) => "https://www.roblox.com/search/communities?keyword=" + q],
   ];
 
   const searchMenu = CER.el("div", "cer-search-menu");
