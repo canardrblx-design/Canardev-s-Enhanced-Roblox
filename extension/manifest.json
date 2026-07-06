@@ -3,51 +3,106 @@
   "name": "Canardev's Enhanced Roblox",
   "version": "1.25.8",
   "description": "Makes Roblox look and feel better. Themes, redesigned pages, and more. Free, open source, no tracking.",
-  "permissions": ["storage", "alarms"],
-  "host_permissions": ["https://*.roblox.com/*", "https://discord.com/api/webhooks/*"],
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*.roblox.com/*",
+    "https://discord.com/api/webhooks/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.roblox.com/*"],
-      "js": ["content/shared.js", "content/theme.js"],
-      "css": ["content/styles.css"],
+      "matches": [
+        "https://www.roblox.com/*"
+      ],
+      "js": [
+        "content/shared.js",
+        "content/theme.js"
+      ],
+      "css": [
+        "content/styles.css"
+      ],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://www.roblox.com/*"],
-      "js": ["content/settings.js", "content/sidebar.js", "content/topbar.js", "content/customsidebar.js", "content/titles.js", "content/chat.js", "content/groups.js", "content/homeprofile.js", "content/sections.js", "content/continue.js", "content/presencerings.js", "content/communityrename.js"],
+      "matches": [
+        "https://www.roblox.com/*"
+      ],
+      "js": [
+        "content/settings.js",
+        "content/sidebar.js",
+        "content/topbar.js",
+        "content/customsidebar.js",
+        "content/titles.js",
+        "content/chat.js",
+        "content/groups.js",
+        "content/homeprofile.js",
+        "content/sections.js",
+        "content/continue.js",
+        "content/presencerings.js",
+        "content/communityrename.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/games/*"],
-      "js": ["content/gamepage.js", "content/gameredesign.js", "content/serverbrowser.js"],
+      "matches": [
+        "https://www.roblox.com/games/*"
+      ],
+      "js": [
+        "content/gamepage.js",
+        "content/gameredesign.js",
+        "content/serverbrowser.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/charts*"],
-      "js": ["content/gamesredesign.js"],
+      "matches": [
+        "https://www.roblox.com/*"
+      ],
+      "js": [
+        "content/gamesredesign.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/my/avatar*"],
-      "js": ["content/avatar.js"],
+      "matches": [
+        "https://www.roblox.com/my/avatar*"
+      ],
+      "js": [
+        "content/avatar.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/users/friends*"],
-      "js": ["content/friendspage.js"],
+      "matches": [
+        "https://www.roblox.com/users/friends*"
+      ],
+      "js": [
+        "content/friendspage.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/users/*/profile*"],
-      "js": ["content/profilesocial.js", "content/profileredesign.js"],
+      "matches": [
+        "https://www.roblox.com/users/*/profile*"
+      ],
+      "js": [
+        "content/profilesocial.js",
+        "content/profileredesign.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/transactions*"],
-      "js": ["content/transactionspage.js"],
+      "matches": [
+        "https://www.roblox.com/transactions*"
+      ],
+      "js": [
+        "content/transactionspage.js"
+      ],
       "run_at": "document_idle"
     },
     {
@@ -58,22 +113,36 @@
         "https://www.roblox.com/communities/configure*",
         "https://www.roblox.com/groups/configure*"
       ],
-      "js": ["content/settingsreskin.js"],
+      "js": [
+        "content/settingsreskin.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/my/messages*"],
-      "js": ["content/messagespage.js"],
+      "matches": [
+        "https://www.roblox.com/my/messages*"
+      ],
+      "js": [
+        "content/messagespage.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/catalog*"],
-      "js": ["content/catalogpage.js"],
+      "matches": [
+        "https://www.roblox.com/catalog*"
+      ],
+      "js": [
+        "content/catalogpage.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.roblox.com/*"],
-      "js": ["content/bridge.js"],
+      "matches": [
+        "https://www.roblox.com/*"
+      ],
+      "js": [
+        "content/bridge.js"
+      ],
       "run_at": "document_idle",
       "world": "MAIN"
     }

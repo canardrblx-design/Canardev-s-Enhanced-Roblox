@@ -93,7 +93,7 @@
     return CER.getGameThumbs([...new Set(universeIds.filter(Boolean).map(String))]);
   }
 
-  function gameCard(g, thumbUrl) {
+  function gameCard(g, thumbUrl, m) {
     const card = CER.el("a", "cer-g-card");
     card.href = "https://www.roblox.com/games/" + (g.rootPlaceId || "") + "/";
     const thumb = CER.el("div", "cer-g-thumb");
@@ -129,17 +129,34 @@
     thumb.appendChild(dots);
     card.appendChild(thumb);
     card.appendChild(CER.el("div", "cer-g-name", CER.cleanTitle ? CER.cleanTitle(g.name || "", settings.features) : g.name || ""));
+    // same meta row as the home cards: like % + players, each with an icon
     const meta = CER.el("div", "cer-g-meta");
-    if (g.playerCount != null) meta.appendChild(CER.el("span", "cer-g-players", Number(g.playerCount).toLocaleString() + " playing"));
+    const pct = m?.votesPct;
+    if (pct != null) {
+      const v = CER.el("span", "cer-g-meta-item");
+      v.appendChild(CER.svg("like", 14));
+      v.appendChild(CER.el("span", "", pct + "%"));
+      meta.appendChild(v);
+    }
+    const playing = m?.playing ?? g.playerCount;
+    if (playing != null) {
+      const p = CER.el("span", "cer-g-meta-item");
+      p.appendChild(CER.svg("people", 14));
+      p.appendChild(CER.el("span", "", Number(playing).toLocaleString()));
+      meta.appendChild(p);
+    }
     card.appendChild(meta);
     return card;
   }
 
   async function renderRow(container, games, limit) {
     const list = games.slice(0, limit);
-    const thumbs = await thumbsForUniverses(list.map((g) => g.universeId));
+    const uni = list.map((g) => g.universeId);
+    // fetch votes + players for every card (including wildcard picks) so they
+    // match the home tiles instead of showing just a raw player count
+    const [thumbs, meta] = await Promise.all([thumbsForUniverses(uni), CER.getGameMeta(uni)]);
     container.textContent = "";
-    for (const g of list) container.appendChild(gameCard(g, thumbs[g.universeId]));
+    for (const g of list) container.appendChild(gameCard(g, thumbs[g.universeId], meta[g.universeId]));
   }
 
   // ---- build the page ----

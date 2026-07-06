@@ -62,7 +62,7 @@
     },
     {
       "matches": [
-        "https://www.roblox.com/charts*"
+        "https://www.roblox.com/*"
       ],
       "js": [
         "content/gamesredesign.js"
@@ -152,7 +152,9 @@
     "gecko": {
       "id": "cer@canardev.dev",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   }

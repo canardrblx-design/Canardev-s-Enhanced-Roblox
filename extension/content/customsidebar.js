@@ -192,7 +192,7 @@
 
   const built = [];
   for (const def of navItems) {
-    if (def.opt && settings.sidebarPrefs[def.label] === "hide") continue;
+    if (def.opt && settings.sidebarPrefs[def.label] !== "show") continue; // opt items (Inventory, Trade) are hidden unless turned on
     const b = item(def);
     inner.appendChild(b.li);
     built.push(b);
