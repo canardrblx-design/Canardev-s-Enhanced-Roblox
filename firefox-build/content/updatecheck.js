@@ -8,9 +8,7 @@
   const ext = CER.ext;
   const REPO = "canardrblx/Canardev-s-Enhanced-Roblox";
 
-  // Promise form works in both Chrome (MV3) and Firefox; the callback form
-  // never fires in Firefox because browser.storage there is promise-only.
-  Promise.resolve(ext.storage.local.get(["cerUpdate", "cerUpdateDismissedAt"])).then((store) => {
+  ext.storage.local.get(["cerUpdate", "cerUpdateDismissedAt"], (store) => {
     const u = store && store.cerUpdate;
     // no data or stale (>3h) — ask the worker to re-check for next time
     if (!u || !u.checkedAt || Date.now() - u.checkedAt > 3 * 3600e3) {
@@ -20,10 +18,9 @@
     if (Date.now() - (store.cerUpdateDismissedAt || 0) < 24 * 3600e3) return; // snoozed
     if (document.querySelector(".cer-update-pop")) return;
     show(u);
-  }, () => {});
+  });
 
   function show(u) {
-    let iv = null; // countdown handle, cleared when the modal closes early
     // centered, blocking modal — the backdrop covers the page so nothing else
     // is clickable until it's acknowledged
     const backdrop = CER.el("div", "cer-update-backdrop");
@@ -36,7 +33,6 @@
 
     const update = CER.el("button", "cer-update-btn cer-update-go", "Update");
     update.addEventListener("click", () => {
-      if (iv) clearInterval(iv);
       window.open("https://github.com/" + REPO + "/releases/latest", "_blank");
       backdrop.remove();
     });
@@ -48,7 +44,6 @@
     cancel.append(cover, label);
     cancel.addEventListener("click", () => {
       if (cancel.disabled) return;
-      if (iv) clearInterval(iv);
       ext.storage.local.set({ cerUpdateDismissedAt: Date.now() });
       backdrop.remove();
     });
