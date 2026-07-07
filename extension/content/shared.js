@@ -1,11 +1,6 @@
-// Shared helpers. Every content_scripts entry lists this file first, then reads
-// `CER`. Chrome shares one scope across all of an extension's content scripts,
-// but Firefox does NOT share it across separate content_scripts entries — so we
-// load this file in every entry and each builds its own CER. It MUST be a
-// top-level `var` (not a block-scoped const on globalThis): that's the only form
-// other scripts in the same entry can read as a bare `CER` in Firefox. `var` +
-// the typeof guard makes re-running it in a shared scope (Chrome) a safe no-op.
-if (typeof CER === "undefined") {
+// Shared helpers. Loaded before every other content script, so anything on
+// `CER` is available to all of them (they run in the same isolated world —
+// think of it like a ModuleScript everything requires).
 
 // Force the new left-nav to render EXPANDED. Roblox stores the collapse state
 // in localStorage['new-left-nav'] keyed by user id; if it's false the sidebar
@@ -53,7 +48,7 @@ try {
   }
 })();
 
-var CER = {
+const CER = {
   // `browser` on Firefox, `chrome` on Chrome — same API either way.
   ext: globalThis.browser ?? globalThis.chrome,
 
@@ -105,13 +100,6 @@ var CER = {
     },
   },
 };
-
-// Expose CER on the shared global. Chrome lets a top-level `const` in one content
-// script be seen by the others, but Firefox does NOT share that binding across
-// separate content_scripts entries — so the document_start scripts (shared/theme)
-// saw CER while every document_idle UI script hit `typeof CER === "undefined"` and
-// bailed, leaving native Roblox. A property on globalThis is visible to them all.
-globalThis.CER = CER;
 
 // Theme presets, Discord-Nitro style.
 // `native` presets just flip Roblox's own light/dark setting.
@@ -665,6 +653,4 @@ CER.buildGameCard = function (game, opts) {
 
   return card;
 };
-
-} // end: if (typeof CER === "undefined")
 

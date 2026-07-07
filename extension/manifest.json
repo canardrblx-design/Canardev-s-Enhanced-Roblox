@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Canardev's Enhanced Roblox",
-  "version": "1.29.6",
+  "version": "1.29.7",
   "description": "Makes Roblox look and feel better. Themes, redesigned pages, and more. Free, open source, no tracking.",
   "permissions": [
     "storage",
@@ -34,7 +34,6 @@
         "https://www.roblox.com/*"
       ],
       "js": [
-        "content/shared.js",
         "content/settings.js",
         "content/sidebar.js",
         "content/topbar.js",
@@ -58,7 +57,6 @@
         "https://www.roblox.com/games/*"
       ],
       "js": [
-        "content/shared.js",
         "content/gamepage.js",
         "content/gameredesign.js",
         "content/serverbrowser.js"
@@ -70,7 +68,6 @@
         "https://www.roblox.com/*"
       ],
       "js": [
-        "content/shared.js",
         "content/gamesredesign.js"
       ],
       "run_at": "document_idle"
@@ -80,7 +77,6 @@
         "https://www.roblox.com/my/avatar*"
       ],
       "js": [
-        "content/shared.js",
         "content/avatar.js"
       ],
       "run_at": "document_idle"
@@ -90,7 +86,6 @@
         "https://www.roblox.com/users/friends*"
       ],
       "js": [
-        "content/shared.js",
         "content/friendspage.js"
       ],
       "run_at": "document_idle"
@@ -100,7 +95,6 @@
         "https://www.roblox.com/users/*/profile*"
       ],
       "js": [
-        "content/shared.js",
         "content/profilesocial.js",
         "content/profileredesign.js"
       ],
@@ -111,7 +105,6 @@
         "https://www.roblox.com/transactions*"
       ],
       "js": [
-        "content/shared.js",
         "content/transactionspage.js"
       ],
       "run_at": "document_idle"
@@ -125,7 +118,6 @@
         "https://www.roblox.com/groups/configure*"
       ],
       "js": [
-        "content/shared.js",
         "content/settingsreskin.js"
       ],
       "run_at": "document_idle"
@@ -135,7 +127,6 @@
         "https://www.roblox.com/my/messages*"
       ],
       "js": [
-        "content/shared.js",
         "content/messagespage.js"
       ],
       "run_at": "document_idle"
@@ -145,7 +136,6 @@
         "https://www.roblox.com/catalog*"
       ],
       "js": [
-        "content/shared.js",
         "content/catalogpage.js"
       ],
       "run_at": "document_idle"
