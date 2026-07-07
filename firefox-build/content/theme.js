@@ -171,11 +171,25 @@
     else skelBg = document.body && document.body.classList.contains("light-theme") ? "#f2f4f5" : "#0f1116";
     rules.push(`:root { --cer-skel-bg: ${skelBg}; }`);
 
-    // dark tints ride on native dark — re-assert the body class every load in
-    // case the server-side flip didn't stick
+    // Re-assert the body class every load. This is what actually makes the theme
+    // show: Roblox re-renders its CACHED theme after a reload (so changing the
+    // server setting alone never flips the visual — verified: server said Light
+    // but the page stayed dark). Forcing the body class here overrides that, for
+    // both dark tints (which ride on native dark) and the native Light/Dark
+    // presets themselves.
     if (tint) {
       document.body?.classList.toggle("dark-theme", !!tint.dark);
       document.body?.classList.toggle("light-theme", !tint.dark);
+    } else if (preset && preset.native) {
+      // Roblox sets its cached class during its own init, which can land after
+      // ours — re-assert a few times so ours wins the race, then stop (no
+      // lingering observer that would fight a later switch to a tint theme).
+      const setNative = () => {
+        document.body?.classList.toggle("dark-theme", preset.native === "Dark");
+        document.body?.classList.toggle("light-theme", preset.native === "Light");
+      };
+      setNative();
+      [150, 500, 1200].forEach((ms) => setTimeout(setNative, ms));
     }
 
     // feature-driven chrome rules (independent of the color preset)

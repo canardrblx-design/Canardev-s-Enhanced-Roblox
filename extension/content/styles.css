@@ -1625,7 +1625,7 @@ ul.badge-list.hlist {
 }
 
 .cer-friend-btn-primary {
-  background: var(--color-action-primary, #00a2ff);
+  background: var(--cer-accent, #335fff);
   color: #fff;
 }
 
@@ -4129,21 +4129,25 @@ body.cer-group-cfg .cer-set-card {
 .cer-settings-warn-icon { font-size: 15px; flex: 0 0 auto; }
 
 /* --- search + discover result cards: give them the CER look --- */
-.cer-search-page .game-card,
-.cer-search-page .game-card-link,
-.cer-search-page .avatar-card-container,
-.cer-search-page .group-card {
-  border-radius: 14px;
+/* Doubled class names (.group-card.group-card) raise specificity above Roblox's
+   own !important rule that paints these cards --color-surface-300; without it the
+   background silently loses and never matches the friends page. */
+.cer-search-page .game-card.game-card,
+.cer-search-page .game-card-link.game-card-link,
+.cer-search-page .avatar-card-container.avatar-card-container,
+.cer-search-page .group-card.group-card {
+  border-radius: 16px;
   padding: 10px;
-  background: var(--color-surface-100, rgba(128, 128, 128, 0.06));
+  /* same surface colour as the normal friends-page cards, so search and friends
+     feel like one design */
+  background: var(--color-surface-100, rgba(128, 128, 128, 0.08));
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.cer-search-page .game-card:hover,
-.cer-search-page .game-card-link:hover,
-.cer-search-page .avatar-card-container:hover,
-.cer-search-page .group-card:hover {
+.cer-search-page .game-card.game-card:hover,
+.cer-search-page .game-card-link.game-card-link:hover,
+.cer-search-page .group-card.group-card:hover {
   transform: translateY(-4px);
-  background: var(--color-surface-200, rgba(128, 128, 128, 0.12));
+  background: var(--color-surface-200, rgba(128, 128, 128, 0.16));
 }
 .cer-search-page .game-card-thumb-container,
 .cer-search-page .game-card-thumb,
@@ -4153,22 +4157,104 @@ body.cer-group-cfg .cer-set-card {
   border-radius: 12px;
   overflow: hidden;
 }
-/* games: center the tile title. people cards keep their native alignment
-   (centering the caption broke the newer horizontal people-card layout). */
+/* games: center the tile title. */
 .cer-search-page .game-card-name {
   text-align: center;
 }
 
 /* search pages: drop the redundant results title, the page's own search bar, and
-   the Create Group button; content flows up to fill the gap */
+   the Create Group button; content flows up to fill the gap. The users page keeps
+   its title + search inside a .top-row that holds no filters, so hide the whole
+   row (scoped to users so the games /discover filter + sort controls survive). */
 .cer-search-page .section-title,
 .cer-search-page .create-group-button,
 .cer-search-page .header-button-containers,
+.cer-search-users .top-row,
 .cer-search-page .form-has-feedback:has(.group-search-field),
-.cer-search-page .form-has-feedback:has(input.new-input-field) {
+.cer-search-page .form-has-feedback:has(input.new-input-field),
+/* communities no-keyword landing: drop the top search bar and the wordy tip
+   banner so the curated rows flow straight up */
+.cer-search-communities .search-container,
+.cer-search-communities group-landing > .section-content {
   display: none !important;
 }
-/* group cards: fit the whole icon + clamp long descriptions to 2 lines */
+
+/* people cards: give each result the profile/home hero look — a full-body avatar
+   render across the top with a gradient fade into the card. Roblox only puts a
+   small circular headshot in the card, so searchpage.js fetches the full-body
+   render (the same thumbnail the profile/home hero uses) and we hide the native
+   headshot: the profile picture itself is never restyled or distorted, just
+   replaced by the render. The name sits below and Add-friend rides the accent. */
+.cer-search-page .avatar-card-container {
+  overflow: hidden;
+  padding: 0;
+}
+.cer-search-page .avatar-card-container:hover {
+  transform: translateY(-4px);
+  background: var(--color-surface-200, rgba(128, 128, 128, 0.16));
+}
+.cer-people-banner {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cer-people-body {
+  height: 99%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom;
+}
+/* headshot + names sit in a row overlapping the banner bottom, like the
+   profile/home hero: circular profile picture on the left, display name and
+   @username beside it. The pfp itself is untouched — just shown in a ring. */
+.cer-people-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  margin-top: -18px;
+  position: relative;
+  z-index: 1;
+}
+.cer-people-head {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 3px solid rgba(230, 230, 230, 0.95);
+  background: rgba(128, 128, 128, 0.3);
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+/* the native circular headshot + online/offline text are replaced by the banner */
+.cer-search-page .avatar-card-fullbody {
+  display: none !important;
+}
+.cer-search-page .avatar-card-caption {
+  padding: 0;
+  text-align: left;
+  min-width: 0;
+}
+.cer-search-page .avatar-status-container {
+  display: none !important;
+}
+.cer-search-page .avatar-card-btns {
+  padding: 12px 14px 14px;
+}
+.cer-search-page .avatar-card-btns button,
+.cer-search-page .avatar-card-btns .btn-control-md {
+  background: var(--cer-accent, #335fff) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* group cards: stroke, room for the whole icon, clamp long descriptions to two
+   lines, and swap the ancient member glyph for the sidebar's three-people icon
+   tinted with the accent (a CSS mask, so it covers dynamically-loaded cards). */
 .cer-search-page .group-card {
   min-height: 110px;
 }
@@ -4177,4 +4263,12 @@ body.cer-group-cfg .cer-set-card {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.cer-search-page .group-card-members .icon-nav-group {
+  background-image: none !important;
+  background-color: var(--cer-accent, #335fff);
+  width: 18px;
+  height: 18px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
