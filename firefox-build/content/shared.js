@@ -1,10 +1,11 @@
 // Shared helpers. Every content_scripts entry lists this file first, then reads
-// `CER`. Chrome shares one global across all of an extension's content scripts,
+// `CER`. Chrome shares one scope across all of an extension's content scripts,
 // but Firefox does NOT share it across separate content_scripts entries — so we
-// can't define CER in one entry and expect the others to see it. Instead each
-// entry loads this file and this guard builds CER once per world (and skips the
-// rebuild on a second load in browsers that DO share the global).
-if (!globalThis.CER) {
+// load this file in every entry and each builds its own CER. It MUST be a
+// top-level `var` (not a block-scoped const on globalThis): that's the only form
+// other scripts in the same entry can read as a bare `CER` in Firefox. `var` +
+// the typeof guard makes re-running it in a shared scope (Chrome) a safe no-op.
+if (typeof CER === "undefined") {
 
 // Force the new left-nav to render EXPANDED. Roblox stores the collapse state
 // in localStorage['new-left-nav'] keyed by user id; if it's false the sidebar
@@ -52,7 +53,7 @@ try {
   }
 })();
 
-const CER = {
+var CER = {
   // `browser` on Firefox, `chrome` on Chrome — same API either way.
   ext: globalThis.browser ?? globalThis.chrome,
 
@@ -665,5 +666,5 @@ CER.buildGameCard = function (game, opts) {
   return card;
 };
 
-} // end: if (!globalThis.CER)
+} // end: if (typeof CER === "undefined")
 
