@@ -1,0 +1,14 @@
+name = "cer-region-cache"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# Daily prune of dead rows (see scheduled() in src/index.js)
+[triggers]
+crons = ["17 4 * * *"]
+
+# D1 database binding. Run `wrangler d1 create cer-region-cache`, then paste the
+# printed database_id here.
+[[d1_databases]]
+binding = "DB"
+database_name = "cer-region-cache"
+database_id = "4a5978e4-03c2-4be6-b1ac-6c38feac5ef4"
